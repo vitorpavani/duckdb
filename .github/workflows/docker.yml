@@ -3,6 +3,7 @@ name: Build and Push DuckDB Docker Image
 on:
   push:
     branches: [main]
+    tags: ['v*.*.*']
   workflow_dispatch:
 
 jobs:
@@ -21,10 +22,20 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set Docker tags
+        id: vars
+        run: |
+          TAGS="${{ secrets.DOCKERHUB_USERNAME }}/duckdb:latest"
+          if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            VERSION_TAG=${GITHUB_REF#refs/tags/}
+            TAGS="${{ secrets.DOCKERHUB_USERNAME }}/duckdb:${VERSION_TAG}"
+          fi
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/duckdb:latest
+          tags: ${{ steps.vars.outputs.tags }}
