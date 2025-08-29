@@ -13,7 +13,7 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          example-command "$SUPER_SECRET"
+          echo "$SUPER_SECRET"
 
       - name: Checkout repository
         uses: actions/checkout@v4
