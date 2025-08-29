@@ -9,12 +9,6 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - shell: bash
-        env:
-          SUPER_SECRET: ${{ secrets.DOCKERHUB_USERNAME }}
-        run: |
-          echo "$SUPER_SECRET"
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
